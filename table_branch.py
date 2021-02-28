@@ -26,7 +26,8 @@ class TableBranch:
             child = deepcopy(self)
             child._set_value(row, col, val)
             child._update_values()
-            children.append(child)
+            if child._is_viable():
+                children.append(child)
         return children
 
     def _remove_empty_liberties(self):
@@ -57,3 +58,6 @@ class TableBranch:
                 self._values[row][col].remove(val)
                 size = len(self._values[row][col])
                 self._liberties[size].add((row, col))
+
+    def _is_viable(self):
+        return len(self._liberties[0]) == 0
