@@ -5,12 +5,15 @@ from copy import deepcopy
 class TableBranch:
     def __init__(self, n, vals_type=set):
         self._n = n
-        get_new_cell = lambda i: vals_type([j for j in range(n) if j != i])
-        get_new_row = lambda: [get_new_cell(i) for i in range(n)]
+        get_new_cell = lambda row, col: vals_type([val for val in range(n) if val != row and val != col])
+        get_new_row = lambda row: [row] + [get_new_cell(row, col) for col in range(1, n)]
         self._values = [[i for i in range(n)]]
-        self._values.extend([get_new_row() for _ in range(n-1)])
+        self._values.extend([get_new_row(row) for row in range(1, n)])
         self._liberties = defaultdict(set)
-        self._liberties[n-1] = set([(row, col) for col in range(n) for row in range(1, n)])
+        self._liberties[n-2] = set([(row, col) for col in range(1, n) for row in range(1, n)])
+        for i in range(1, n):
+            self._liberties[n-2].remove((i, i))
+            self._liberties[n-1].add((i, i))
 
     @property
     def values(self):
