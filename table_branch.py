@@ -1,4 +1,5 @@
 from collections import defaultdict
+from copy import deepcopy
 
 
 class TableBranch:
@@ -14,6 +15,24 @@ class TableBranch:
     @property
     def values(self):
         return self._values
+
+    def get_children(self):
+        self._remove_empty_liberties()
+        size = min(self._liberties.keys())
+        row, col = self._liberties[size].pop()
+        assert len(self._values[row][col]) == size
+        children = []
+        for val in self._values[row][col]:
+            child = deepcopy(self)
+            child._set_value(row, col, val)
+            child._update_values()
+            children.append(child)
+        return children
+
+    def _remove_empty_liberties(self):
+        for k, v in self._liberties.items():
+            if len(v) == 0:
+                del self._liberties[k]
 
     def _update_values(self):
         while self._liberties[1]:
