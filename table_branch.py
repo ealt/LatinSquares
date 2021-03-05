@@ -34,9 +34,9 @@ class TableBranch:
         return children
 
     def _remove_empty_liberties(self):
-        for k, v in self._liberties.items():
-            if len(v) == 0:
-                del self._liberties[k]
+        for size in range(self._n):
+            if len(self._liberties[size]) == 0:
+                del self._liberties[size]
 
     def _update_values(self):
         while self._liberties[1]:
