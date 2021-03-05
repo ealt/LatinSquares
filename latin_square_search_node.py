@@ -2,7 +2,7 @@ from collections import defaultdict
 from copy import deepcopy
 
 
-class TableBranch:
+class LatinSquareSearchNode:
     def __init__(self, n, vals_type=set):
         self._n = n
         get_new_cell = lambda row, col: vals_type([val for val in range(n) if val != row and val != col])
