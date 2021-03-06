@@ -19,6 +19,10 @@ class LatinSquareSearchNode:
     def values(self):
         return self._values
 
+    def is_terminal(self):
+        self._remove_empty_liberties()
+        return not self._liberties
+
     def get_children(self):
         self._remove_empty_liberties()
         size = min(self._liberties.keys())
