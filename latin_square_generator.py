@@ -19,7 +19,7 @@ class LatinSquareGenerator:
                     elif self._subset == 'symbol_isotropy_classes':
                         yield from self._get_row_permutations(latin_square)
                     else:
-                        yield from self._get_all_permutations(latin_squares)
+                        yield from self._get_all_permutations(latin_square)
                 else:
                     self._search_nodes.append(child_node)
 
