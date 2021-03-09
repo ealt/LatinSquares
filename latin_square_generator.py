@@ -13,7 +13,7 @@ class LatinSquareGenerator:
             search_node = self._search_nodes.pop()
             for child_node in search_node.get_children():
                 if child_node.is_terminal():
-                    latin_square = child_node.values
+                    latin_square = child_node.symbols
                     if self._subset == 'reduced':
                         yield latin_square
                     elif self._subset == 'symbol_isotropy_classes':
