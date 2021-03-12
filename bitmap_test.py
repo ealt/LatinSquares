@@ -76,6 +76,58 @@ class BitmapTest(unittest.TestCase):
         self.assertEqual(bitmap.get_bit(0), 0)
         self.assertEqual(bitmap.value, 12)
 
+    def test_invalid_value(self):
+        bitmap = Bitmap(size=10, value=10)
+        with self.assertRaises(TypeError):
+            bitmap.value = 7.0
+        with self.assertRaises(TypeError):
+            bitmap.value = '0b111'
+        with self.assertRaises(TypeError):
+            bitmap.value = [7]
+        # value < 0
+        with self.assertRaises(ValueError):
+            bitmap.value = -1
+        # value >= (1 << size)
+        with self.assertRaises(ValueError):
+            bitmap.value = 1024
+        with self.assertRaises(TypeError):
+            _ = Bitmap(value=(10,))
+
+    def test_invalid_size(self):
+        with self.assertRaises(TypeError):
+            _ = Bitmap(size=7.0)
+        with self.assertRaises(TypeError):
+            _ = Bitmap(size='0b111')
+        with self.assertRaises(TypeError):
+            _ = Bitmap(size=[7])
+        # size < len(bin(value))
+        with self.assertRaises(ValueError):
+            _ = Bitmap(size=3, value=10)
+
+    def test_invalid_i(self):
+        bitmap = Bitmap(size=10, value=10)
+        with self.assertRaises(TypeError):
+            _ = bitmap.get_bit(2.0)
+        with self.assertRaises(TypeError):
+            bitmap.set_bit('0b0010')
+        with self.assertRaises(TypeError):
+            bitmap.clear_bit([2])
+        # i < 0
+        with self.assertRaises(ValueError):
+            bitmap.flip_bit(-1)
+        # i >= size
+        with self.assertRaises(ValueError):
+            _ = bitmap.get_bit(10)   
+
+    def test_invalid_v(self):
+        bitmap = Bitmap(value=10)
+        with self.assertRaises(ValueError):
+            bitmap.update_bit(2, 2)
+        with self.assertRaises(ValueError):
+            bitmap.update_bit(1, None)
+        with self.assertRaises(ValueError):
+            bitmap.update_bit(0, '1')
+
 
 if __name__ == '__main__':
     unittest.main()
