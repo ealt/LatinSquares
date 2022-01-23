@@ -32,14 +32,12 @@ class LatinSquareSearchNode:
         size = min(self._liberties.keys())
         r, c = self._liberties[size].pop()
         assert len(self._symbols[r][c]) == size
-        children = []
         for s in self._symbols[r][c]:
             child = deepcopy(self)
             child._set_symbol(r, c, s)
             child._update_symbols()
             if child._is_viable():
-                children.append(child)
-        return children
+                yield child
 
     def _remove_empty_liberties(self):
         for size in range(self._n):
