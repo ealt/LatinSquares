@@ -3,17 +3,21 @@ from copy import deepcopy
 
 
 class LatinSquareSearchNode:
+
     def __init__(self, n, cell_container=set):
         self._n = n
-        get_new_cell = lambda r, c: cell_container([s for s in range(n) if s != r and s != c])
+        get_new_cell = lambda r, c: cell_container(
+            [s for s in range(n) if s != r and s != c])
         get_new_row = lambda r: [r] + [get_new_cell(r, c) for c in range(1, n)]
         self._symbols = [[i for i in range(n)]]
         self._symbols.extend([get_new_row(r) for r in range(1, n)])
         self._liberties = defaultdict(set)
-        self._liberties[n-2] = set([(r, c) for c in range(1, n) for r in range(1, n)])
+        self._liberties[n - 2] = set([
+            (r, c) for c in range(1, n) for r in range(1, n)
+        ])
         for i in range(1, n):
-            self._liberties[n-2].remove((i, i))
-            self._liberties[n-1].add((i, i))
+            self._liberties[n - 2].remove((i, i))
+            self._liberties[n - 1].add((i, i))
 
     @property
     def symbols(self):
@@ -48,7 +52,7 @@ class LatinSquareSearchNode:
             assert len(self._symbols[r][c]) == 1
             s = self._symbols[r][c].pop()
             self._set_symbol(r, c, s)
-    
+
     def _set_symbol(self, r, c, s):
         size = len(self._symbols[r][c])
         self._liberties[size].discard((r, c))
