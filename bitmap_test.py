@@ -79,11 +79,11 @@ class BitmapTest(unittest.TestCase):
     def test_invalid_value(self):
         bitmap = Bitmap(size=10, value=10)
         with self.assertRaises(TypeError):
-            bitmap.value = 7.0
+            bitmap.value = 7.0  # type: ignore
         with self.assertRaises(TypeError):
-            bitmap.value = '0b111'
+            bitmap.value = '0b111'  # type: ignore
         with self.assertRaises(TypeError):
-            bitmap.value = [7]
+            bitmap.value = [7]  # type: ignore
         # value < 0
         with self.assertRaises(ValueError):
             bitmap.value = -1
@@ -91,15 +91,15 @@ class BitmapTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             bitmap.value = 1024
         with self.assertRaises(TypeError):
-            _ = Bitmap(value=(10,))
+            _ = Bitmap(value=(10,))  # type: ignore
 
     def test_invalid_size(self):
         with self.assertRaises(TypeError):
-            _ = Bitmap(size=7.0)
+            _ = Bitmap(size=7.0)  # type: ignore
         with self.assertRaises(TypeError):
-            _ = Bitmap(size='0b111')
+            _ = Bitmap(size='0b111')  # type: ignore
         with self.assertRaises(TypeError):
-            _ = Bitmap(size=[7])
+            _ = Bitmap(size=[7])  # type: ignore
         # size < len(bin(value))
         with self.assertRaises(ValueError):
             _ = Bitmap(size=3, value=10)
@@ -107,26 +107,26 @@ class BitmapTest(unittest.TestCase):
     def test_invalid_i(self):
         bitmap = Bitmap(size=10, value=10)
         with self.assertRaises(TypeError):
-            _ = bitmap.get_bit(2.0)
+            _ = bitmap.get_bit(2.0)  # type: ignore
         with self.assertRaises(TypeError):
-            bitmap.set_bit('0b0010')
+            bitmap.set_bit('0b0010')  # type: ignore
         with self.assertRaises(TypeError):
-            bitmap.clear_bit([2])
+            bitmap.clear_bit([2])  # type: ignore
         # i < 0
         with self.assertRaises(ValueError):
             bitmap.flip_bit(-1)
         # i >= size
         with self.assertRaises(ValueError):
-            _ = bitmap.get_bit(10)   
+            _ = bitmap.get_bit(10)
 
     def test_invalid_v(self):
         bitmap = Bitmap(value=10)
         with self.assertRaises(ValueError):
             bitmap.update_bit(2, 2)
         with self.assertRaises(ValueError):
-            bitmap.update_bit(1, None)
+            bitmap.update_bit(1, None)  # type: ignore
         with self.assertRaises(ValueError):
-            bitmap.update_bit(0, '1')
+            bitmap.update_bit(0, '1')  # type: ignore
 
 
 if __name__ == '__main__':
