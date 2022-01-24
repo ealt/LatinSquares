@@ -272,6 +272,28 @@ class BitmapSet:
         self.update(other)
         return self
 
+    def __and__(self, other):
+        return self.intersection(other)
+
+    def __rand__(self, other):
+        return self.intersection(other)
+
+    def intersection(self, *others):
+        value = self._bitmap.value
+        for other in others:
+            self._validate_other(other)
+            value &= other._bitmap.value
+        return self.__class__(size=self.size, shape=self.shape, elems=value)
+
+    def intersection_update(self, *others):
+        for other in others:
+            self._validate_other(other)
+            self._bitmap.value &= other._bitmap.value
+
+    def __iand__(self, other):
+        self.intersection_update(other)
+        return self
+
     def __sub__(self, other):
         return self.difference(other)
 

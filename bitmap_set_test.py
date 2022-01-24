@@ -490,6 +490,80 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set_1d.update(*others_1d)
         self.assertBitmapSetEqual(bitmap_set_1d, expected_1d)
 
+    def test_intersection(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_b, _c])
+        self.assertBitmapSetEqual(bitmap_set.intersection(other), expected)
+        self.assertBitmapSetEqual(bitmap_set & other, expected)
+        self.assertBitmapSetEqual(other & bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[1, 2])
+        self.assertBitmapSetEqual(bitmap_set_1d.intersection(other_1d),
+                                  expected_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d & other_1d, expected_1d)
+        self.assertBitmapSetEqual(other_1d & bitmap_set_1d, expected_1d)
+
+    def test_intersection_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        others = [
+            BitmapSet(shape=_shape, elems=[_a, _b]),
+            BitmapSet(shape=_shape, elems=[_a, _c]),
+            BitmapSet(shape=_shape, elems=[_a, _d]),
+        ]
+        expected = BitmapSet(shape=_shape, elems=[_a])
+        self.assertBitmapSetEqual(bitmap_set.intersection(*others), expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        others_1d = [
+            BitmapSet(size=4, elems=[0, 1]),
+            BitmapSet(size=4, elems=[0, 2]),
+            BitmapSet(size=4, elems=[0, 3]),
+        ]
+        expected_1d = BitmapSet(size=4, elems=[0])
+        self.assertBitmapSetEqual(bitmap_set_1d.intersection(*others_1d),
+                                  expected_1d)
+
+    def test_intersection_update(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_b, _c])
+        actual = bitmap_set.copy()
+        actual.intersection_update(other)
+        self.assertBitmapSetEqual(actual, expected)
+        actual = bitmap_set.copy()
+        actual &= other
+        self.assertBitmapSetEqual(actual, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[1, 2])
+        actual_1d = bitmap_set_1d.copy()
+        actual_1d.intersection_update(other_1d)
+        self.assertTrue(actual_1d == expected_1d)
+        actual_1d = bitmap_set_1d.copy()
+        actual_1d &= other_1d
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+
+    def test_intersection_update_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        others = [
+            BitmapSet(shape=_shape, elems=[_a, _b]),
+            BitmapSet(shape=_shape, elems=[_a, _c]),
+            BitmapSet(shape=_shape, elems=[_a, _d]),
+        ]
+        bitmap_set.intersection_update(*others)
+        expected = BitmapSet(shape=_shape, elems=[_a])
+        self.assertBitmapSetEqual(bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        others_1d = [
+            BitmapSet(size=4, elems=[0, 1]),
+            BitmapSet(size=4, elems=[0, 2]),
+            BitmapSet(size=4, elems=[0, 3]),
+        ]
+        expected_1d = BitmapSet(size=4, elems=[0])
+        bitmap_set_1d.intersection_update(*others_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d, expected_1d)
+
     def test_difference(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
