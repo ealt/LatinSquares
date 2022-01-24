@@ -2,6 +2,12 @@ import unittest
 
 from bitmap_set import BitmapSet
 
+_shape = (2, 3, 4)
+_a = (0, 0, 1)  # elem 1
+_b = (0, 2, 0)  # elem 8
+_c = (1, 0, 2)  # elem 14
+_d = (1, 1, 3)  # elem 19
+
 
 class BitmapSetTest(unittest.TestCase):
 
@@ -66,6 +72,11 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(size=24, shape=(2, 3, 4))
         self.assertEqual(bitmap_set.size, 24)
         self.assertTupleEqual(bitmap_set.shape, (2, 3, 4))
+
+    def test_invalid_elems(self):
+        # elems must be an int or iterable
+        with self.assertRaises(TypeError):
+            _ = BitmapSet(shape=_shape, elems=524546.0)
 
 
 if __name__ == '__main__':
