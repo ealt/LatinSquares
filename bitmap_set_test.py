@@ -299,6 +299,20 @@ class BitmapSetTest(unittest.TestCase):
         self.assertFalse(bitmap_set_1d == other_1d)
         self.assertTrue(bitmap_set_1d != other_1d)
 
+    def test_isdisjoint(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # same sets
+        other = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertFalse(bitmap_set.isdisjoint(other))
+        other_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertFalse(bitmap_set_1d.isdisjoint(other_1d))
+        # different sets
+        other = BitmapSet(shape=_shape, elems=[_a, _d, _b])
+        self.assertTrue(bitmap_set.isdisjoint(other))
+        other_1d = BitmapSet(size=4, elems=[0, 3, 1])
+        self.assertTrue(bitmap_set_1d.isdisjoint(other_1d))
+
 
 if __name__ == '__main__':
     unittest.main()

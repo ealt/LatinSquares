@@ -212,3 +212,7 @@ class BitmapSet:
             return False
         except ValueError:
             return False
+
+    def isdisjoint(self, other):
+        self._validate_other(other)
+        return bool(self._bitmap.value ^ other._bitmap.value)
