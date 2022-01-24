@@ -80,6 +80,11 @@ class BitmapSet:
     def shape(self) -> tuple[int]:
         return self._shape
 
+    def __iter__(self):
+        for i, bit in enumerate(reversed(bin(self._bitmap.value)[2:])):
+            if bit == '1':
+                yield self._unhash(i)
+
     def _validate_elem(self, elem: Union[int, tuple[int]]) -> None:
         if isinstance(elem, tuple):
             if len(elem) == len(self.shape) and all(
@@ -108,6 +113,16 @@ class BitmapSet:
                 i += v * factor
                 factor *= n
             return i
+
+    def _unhash(self, i):
+        if len(self.shape) == 1:
+            return i
+        else:
+            elem = [0] * len(self.shape)
+            for v_i, n in enumerate(reversed(self.shape)):
+                elem[v_i] = i % n
+                i //= n
+            return tuple(reversed(elem))
 
     def add(self, elem: Union[int, tuple[int]]) -> None:
         self._validate_elem(elem)
