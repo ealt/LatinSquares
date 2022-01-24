@@ -98,16 +98,24 @@ class BitmapSetTest(unittest.TestCase):
         # indicies of ones: ^19  ^14   ^8     ^1
         bitmap_set = BitmapSet(shape=_shape, elems=16642)
         self.assertListEqual(list(bitmap_set), [_a, _b, _c])
+        # bin(7) = '0111'
+        # indicies of ones: 2, 1, 0
+        bitmap_set = BitmapSet(size=4, elems=7)
+        self.assertListEqual(list(bitmap_set), [0, 1, 2])
 
     # ------- container methods ------------------------------------------------
 
     def test_len(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         self.assertEqual(len(bitmap_set), 3)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertEqual(len(bitmap_set_1d), 3)
 
     def test_reversed(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         self.assertListEqual(list(reversed(bitmap_set)), [_c, _b, _a])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertListEqual(list(reversed(bitmap_set_1d)), [2, 1, 0])
 
     def test_repr(self):
         bitmap_set = BitmapSet(shape=_shape,
