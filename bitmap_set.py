@@ -80,7 +80,7 @@ class BitmapSet:
     def shape(self) -> tuple[int]:
         return self._shape
 
-    def __len__(self):
+    def __len__(self) -> int:
         # return self._elems.bit_count()  # new in version 3.10
         return bin(self._bitmap.value).count('1')
 
@@ -118,7 +118,7 @@ class BitmapSet:
                 factor *= n
             return i
 
-    def _unhash(self, i):
+    def _unhash(self, i: int) -> tuple[int]:
         if len(self.shape) == 1:
             return i
         else:
@@ -128,7 +128,7 @@ class BitmapSet:
                 i //= n
             return tuple(reversed(elem))
 
-    def __contains__(self, elem):
+    def __contains__(self, elem: Union[int, tuple[int]]) -> bool:
         self._validate_elem(elem)
         i = self._hash(elem)
         return bool(self._bitmap.get_bit(i))
