@@ -73,10 +73,43 @@ class BitmapSetTest(unittest.TestCase):
         self.assertEqual(bitmap_set.size, 24)
         self.assertTupleEqual(bitmap_set.shape, (2, 3, 4))
 
+    def test_empty_init(self):
+        # default to empty set
+        bitmap_set = BitmapSet(shape=_shape)
+        self.assertListEqual(list(bitmap_set), [])
+        # value of 0 corresponds to empty set
+        bitmap_set = BitmapSet(shape=_shape, elems=0)
+        self.assertListEqual(list(bitmap_set), [])
+        # set explicity with an empty sequence
+        bitmap_set = BitmapSet(shape=_shape, elems=[])
+        self.assertListEqual(list(bitmap_set), [])
+
     def test_invalid_elems(self):
         # elems must be an int or iterable
         with self.assertRaises(TypeError):
             _ = BitmapSet(shape=_shape, elems=524546.0)
+
+    def test_elems_sequence_init(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertListEqual(list(bitmap_set), [_a, _b, _c])
+
+    def test_elems_int_init(self):
+        # bin(524546) = '000000000100000100000010'
+        # indicies of ones:  ^19  ^14   ^8     ^1
+        bitmap_set = BitmapSet(shape=_shape, elems=16642)
+        self.assertListEqual(list(bitmap_set), [_a, _b, _c])
+
+    def test_add(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # new element added set
+        bitmap_set.add(_d)
+        bitmap_set_1d.add((3,))
+        # was already in set
+        bitmap_set.add(_b)
+        bitmap_set_1d.add(1)
+        self.assertListEqual(list(bitmap_set), [_a, _b, _c, _d])
+        self.assertListEqual(list(bitmap_set_1d), [0, 1, 2, 3])
 
 
 if __name__ == '__main__':
