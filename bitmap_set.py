@@ -1,11 +1,11 @@
 from functools import reduce
 from operator import mul
-from typing import Iterable, Optional, TypeAlias, Union
+from typing import Iterable, Optional, Union
 
 from bitmap import Bitmap
 
-Elem: TypeAlias = Union[int, tuple[int]]
-Elems: TypeAlias = Union[int, Iterable[Elem]]
+Elem = Union[int, tuple[int]]
+Elems = Union[int, Iterable[Elem]]
 
 
 class BitmapSet:
