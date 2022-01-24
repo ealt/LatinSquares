@@ -259,6 +259,18 @@ class BitmapSetTest(unittest.TestCase):
 
     # ------- other methods ----------------------------------------------------
 
+    def test_invalid_other(self):
+        # other must be a BitmapSet...
+        bitmap_set_1d = BitmapSet(size=4)
+        other = set()
+        with self.assertRaises(TypeError):
+            bitmap_set_1d.isdisjoint(other)
+        # ...with the same shape
+        bitmap_set = BitmapSet(shape=(2, 3, 4))
+        other = BitmapSet(shape=(4, 3, 2))
+        with self.assertRaises(ValueError):
+            bitmap_set.isdisjoint(other)
+
     def test_eq(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
