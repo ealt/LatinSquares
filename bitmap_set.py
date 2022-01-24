@@ -80,6 +80,10 @@ class BitmapSet:
     def shape(self) -> tuple[int]:
         return self._shape
 
+    def __len__(self):
+        # return self._elems.bit_count()  # new in version 3.10
+        return bin(self._bitmap.value).count('1')
+
     def __iter__(self):
         for i, bit in enumerate(reversed(bin(self._bitmap.value)[2:])):
             if bit == '1':

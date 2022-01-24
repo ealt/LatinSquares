@@ -99,6 +99,10 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(shape=_shape, elems=16642)
         self.assertListEqual(list(bitmap_set), [_a, _b, _c])
 
+    def test_len(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertEqual(len(bitmap_set), 3)
+
     def test_add(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
