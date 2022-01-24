@@ -155,6 +155,12 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.set_bit(i)
 
+    def remove(self, elem):
+        if elem not in self:
+            raise KeyError
+        else:
+            self.discard(elem)
+
     def discard(self, elem: Elem):
         self._validate_elem(elem)
         i = self._hash(elem)

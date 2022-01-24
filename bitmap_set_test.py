@@ -187,6 +187,20 @@ class BitmapSetTest(unittest.TestCase):
         self.assertListEqual(list(bitmap_set), [_a, _b, _c, _d])
         self.assertListEqual(list(bitmap_set_1d), [0, 1, 2, 3])
 
+    def test_remove(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # remove elements in set
+        bitmap_set.remove(_c)
+        bitmap_set_1d.remove(2)
+        self.assertListEqual(list(bitmap_set), [_a, _b])
+        self.assertListEqual(list(bitmap_set_1d), [0, 1])
+        # elements not in set
+        with self.assertRaises(KeyError):
+            bitmap_set.remove(_d)
+        with self.assertRaises(KeyError):
+            bitmap_set_1d.remove((3,))
+
     def test_discard(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
