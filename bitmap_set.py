@@ -152,3 +152,8 @@ class BitmapSet:
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.set_bit(i)
+
+    def discard(self, elem):
+        self._validate_elem(elem)
+        i = self._hash(elem)
+        self._bitmap.clear_bit(i)
