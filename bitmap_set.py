@@ -1,6 +1,6 @@
 from functools import reduce
 from operator import mul
-from typing import Iterable, Iterator, Optional, Union
+from typing import Any, Iterable, Iterator, Optional, Union
 
 from bitmap import Bitmap
 
@@ -192,7 +192,7 @@ class BitmapSet:
 
     # ------- other methods ----------------------------------------------------
 
-    def _validate_other(self, other):
+    def _validate_other(self, other: Any) -> None:
         if not isinstance(other, self.__class__):
             raise TypeError
         elif other.shape != self.shape:
