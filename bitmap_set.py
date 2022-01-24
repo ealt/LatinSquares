@@ -174,3 +174,6 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
         return elem
+
+    def clear(self) -> None:
+        self._bitmap.value = 0

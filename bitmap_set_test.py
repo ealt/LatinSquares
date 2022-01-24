@@ -229,6 +229,14 @@ class BitmapSetTest(unittest.TestCase):
         self.assertListEqual(list(bitmap_set), [_b, _c])
         self.assertListEqual(list(bitmap_set_1d), [1, 2])
 
+    def test_clear(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        bitmap_set.clear()
+        bitmap_set_1d.clear()
+        self.assertListEqual(list(bitmap_set), [])
+        self.assertListEqual(list(bitmap_set_1d), [])
+
 
 if __name__ == '__main__':
     unittest.main()
