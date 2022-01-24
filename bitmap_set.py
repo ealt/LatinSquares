@@ -197,3 +197,18 @@ class BitmapSet:
             raise TypeError
         elif other.shape != self.shape:
             raise ValueError
+
+    def __ne__(self, other):
+        return not self.equals(other)
+
+    def __eq__(self, other):
+        return self.equals(other)
+
+    def equals(self, other):
+        try:
+            self._validate_other(other)
+            return self._bitmap.value == other._bitmap.value
+        except TypeError:
+            return False
+        except ValueError:
+            return False

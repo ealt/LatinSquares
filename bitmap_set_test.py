@@ -257,6 +257,48 @@ class BitmapSetTest(unittest.TestCase):
         self.assertListEqual(list(bitmap_set), [])
         self.assertListEqual(list(bitmap_set_1d), [])
 
+    # ------- other methods ----------------------------------------------------
+
+    def test_eq(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # same sets
+        other = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertTrue(bitmap_set.equals(other))
+        self.assertTrue(bitmap_set == other)
+        self.assertFalse(bitmap_set != other)
+        other_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertTrue(bitmap_set_1d.equals(other_1d))
+        self.assertTrue(bitmap_set_1d == other_1d)
+        self.assertFalse(bitmap_set_1d != other_1d)
+        # same elements, but different shape
+        other = BitmapSet(shape=(3, 4, 5), elems=[_a, _b, _c])
+        self.assertFalse(bitmap_set.equals(other))
+        self.assertFalse(bitmap_set == other)
+        self.assertTrue(bitmap_set != other)
+        other_1d = BitmapSet(shape=(2, 2), elems=[(0, 0), (0, 1), (1, 0)])
+        self.assertFalse(bitmap_set_1d.equals(other_1d))
+        self.assertFalse(bitmap_set_1d == other_1d)
+        self.assertTrue(bitmap_set_1d != other_1d)
+        # same shape, but different elements
+        other = BitmapSet(shape=_shape, elems=[_a, _d, _b])
+        self.assertFalse(bitmap_set.equals(other))
+        self.assertFalse(bitmap_set == other)
+        self.assertTrue(bitmap_set != other)
+        other_1d = BitmapSet(size=4, elems=[0, 3, 1])
+        self.assertFalse(bitmap_set_1d.equals(other_1d))
+        self.assertFalse(bitmap_set_1d == other_1d)
+        self.assertTrue(bitmap_set_1d != other_1d)
+        # different type
+        other = set([_a, _b, _c])
+        self.assertFalse(bitmap_set.equals(other))  # type: ignore
+        self.assertFalse(bitmap_set == other)  # type: ignore
+        self.assertTrue(bitmap_set != other)  # type: ignore
+        other_1d = set([0, 1, 2])
+        self.assertFalse(bitmap_set_1d.equals(other_1d))
+        self.assertFalse(bitmap_set_1d == other_1d)
+        self.assertTrue(bitmap_set_1d != other_1d)
+
 
 if __name__ == '__main__':
     unittest.main()
