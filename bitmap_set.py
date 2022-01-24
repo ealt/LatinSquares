@@ -169,7 +169,7 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
 
-    def pop(self) -> tuple[int]:
+    def pop(self) -> Elem:
         elem = next(iter(self))
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
