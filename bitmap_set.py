@@ -105,6 +105,9 @@ class BitmapSet:
     def __repr__(self) -> str:
         return '{' + ', '.join([str(elem) for elem in iter(self)]) + '}'
 
+    def __reduce__(self) -> tuple[type, tuple[int, tuple[int], int]]:
+        return (self.__class__, (self.size, self.shape, self._bitmap.value))
+
     # ------- single elem methods ----------------------------------------------
 
     def _validate_elem(self, elem: Elem) -> None:
