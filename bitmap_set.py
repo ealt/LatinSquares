@@ -127,7 +127,7 @@ class BitmapSet:
                 factor *= n
             return i
 
-    def _unhash(self, i: int) -> tuple[int]:
+    def _unhash(self, i: int) -> Elem:
         if len(self.shape) == 1:
             return i
         else:
