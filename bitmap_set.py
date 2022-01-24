@@ -77,6 +77,11 @@ class BitmapSet:
         else:
             raise TypeError
 
+    def copy(self):
+        return self.__class__(size=self.size,
+                              shape=self.shape,
+                              elems=self._bitmap.value)
+
     # ------- container methods ------------------------------------------------
 
     @property

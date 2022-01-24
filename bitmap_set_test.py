@@ -103,6 +103,23 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(size=4, elems=7)
         self.assertListEqual(list(bitmap_set), [0, 1, 2])
 
+    def test_copy(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other = bitmap_set.copy()
+        other_1d = bitmap_set_1d.copy()
+        self.assertTrue(bitmap_set == other)
+        self.assertTrue(bitmap_set_1d == other_1d)
+        # copy is a distinct object
+        self.assertTrue(id(bitmap_set) != id(other))
+        self.assertTrue(id(bitmap_set_1d) != id(other_1d))
+        bitmap_set.add(_d)
+        bitmap_set_1d.add(3)
+        other.remove(_c)
+        other_1d.remove(2)
+        self.assertTrue(bitmap_set != other)
+        self.assertTrue(bitmap_set_1d != other_1d)
+
     # ------- container methods ------------------------------------------------
 
     def test_len(self):
