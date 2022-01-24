@@ -155,6 +155,26 @@ class BitmapSetTest(unittest.TestCase):
         self.assertFalse(_d in bitmap_set)
         self.assertFalse((3,) in bitmap_set_1d)
 
+    def test_set_item(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # `True` and `1` are equivalent in the bitmap
+        # new element set to True
+        bitmap_set[_d] = True
+        bitmap_set_1d[(3,)] = 1
+        # was already True in set
+        bitmap_set[_b] = 1
+        bitmap_set_1d[1] = True
+        # `False` and `0` are equivalent in the bitmap
+        # existing element set to False
+        bitmap_set[_c] = False
+        bitmap_set_1d[(2,)] = 0
+        # was already False in set
+        bitmap_set[_c] = 0
+        bitmap_set_1d[2] = False
+        self.assertListEqual(list(bitmap_set), [_a, _b, _d])
+        self.assertListEqual(list(bitmap_set_1d), [0, 1, 3])
+
     def test_add(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])

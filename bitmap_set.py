@@ -142,6 +142,12 @@ class BitmapSet:
         i = self._hash(elem)
         return bool(self._bitmap.get_bit(i))
 
+    def __setitem__(self, elem: Union[int, tuple[int]], v: Union[bool,
+                                                                 int]) -> None:
+        self._validate_elem(elem)
+        i = self._hash(elem)
+        self._bitmap.update_bit(i, v)
+
     def add(self, elem: Union[int, tuple[int]]) -> None:
         self._validate_elem(elem)
         i = self._hash(elem)
