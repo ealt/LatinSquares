@@ -103,6 +103,40 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         self.assertEqual(len(bitmap_set), 3)
 
+    def test_invalid_elem(self):
+        bitmap_set = BitmapSet(shape=(2, 3, 4))
+        bitmap_set_1d = BitmapSet(size=4)
+        # if shape is not 1d, elem must be a tuple...
+        with self.assertRaises(TypeError):
+            1 in bitmap_set
+        with self.assertRaises(TypeError):
+            [0, 0, 1] in bitmap_set
+        # ...if shape is 1d int is the only other acceptable type...
+        with self.assertRaises(TypeError):
+            1.0 in bitmap_set_1d
+        with self.assertRaises(TypeError):
+            '1' in bitmap_set_1d
+        # ...tuple elements must have the same len as shape...
+        with self.assertRaises(TypeError):
+            (0, 1) in bitmap_set
+        with self.assertRaises(TypeError):
+            (0, 1) in bitmap_set_1d
+        # ...and tuple values must all be integers...
+        with self.assertRaises(TypeError):
+            ('0', '0', '1') in bitmap_set
+        with self.assertRaises(TypeError):
+            (1.0,) in bitmap_set
+        # ...that are non-negative...
+        with self.assertRaises(ValueError):
+            (0, 0, -1) in bitmap_set
+        with self.assertRaises(ValueError):
+            (-1,) in bitmap_set_1d
+        # ...and less than the corresponding dimension length in shape
+        with self.assertRaises(ValueError):
+            (3, 0, 1) in bitmap_set
+        with self.assertRaises(ValueError):
+            (4,) in bitmap_set_1d
+
     def test_contains(self):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
