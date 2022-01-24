@@ -1,8 +1,11 @@
 from functools import reduce
 from operator import mul
-from typing import Iterable, Optional, Union
+from typing import Iterable, Optional, TypeAlias, Union
 
 from bitmap import Bitmap
+
+Elem: TypeAlias = Union[int, tuple[int]]
+Elems: TypeAlias = Union[int, Iterable[Elem]]
 
 
 class BitmapSet:
@@ -12,12 +15,12 @@ class BitmapSet:
     def __init__(self,
                  size: Optional[int] = None,
                  shape: Optional[tuple[int]] = None,
-                 elems: Optional[Union[int, Iterable[int]]] = None,
+                 elems: Optional[Elems] = None,
                  **kwargs) -> None:
         self._init_size_shape(size, shape)
         self._init_bitmap(elems)
 
-    def _init_bitmap(self, elems: Optional[Union[int, Iterable[int]]]) -> None:
+    def _init_bitmap(self, elems: Optional[Elems]) -> None:
         self._bitmap = Bitmap(size=self.size)
         if elems:
             self._init_elems(elems)
@@ -65,7 +68,7 @@ class BitmapSet:
         else:
             raise TypeError
 
-    def _init_elems(self, elems: Union[int, Iterable[int]]) -> None:
+    def _init_elems(self, elems: Elems) -> None:
         if isinstance(elems, int):
             self._bitmap.value = elems
         elif hasattr(elems, '__iter__'):
@@ -95,7 +98,7 @@ class BitmapSet:
 
     # ------- single elem methods ----------------------------------------------
 
-    def _validate_elem(self, elem: Union[int, tuple[int]]) -> None:
+    def _validate_elem(self, elem: Elem) -> None:
         if isinstance(elem, tuple):
             if len(elem) == len(self.shape) and all(
                     isinstance(v, int) for v in elem):
@@ -113,7 +116,7 @@ class BitmapSet:
         else:
             raise TypeError
 
-    def _hash(self, elem: Union[int, tuple[int]]) -> int:
+    def _hash(self, elem: Elem) -> int:
         if isinstance(elem, int):
             return elem
         else:
@@ -134,26 +137,25 @@ class BitmapSet:
                 i //= n
             return tuple(reversed(elem))
 
-    def __getitem__(self, elem: Union[int, tuple[int]]) -> bool:
+    def __getitem__(self, elem: Elem) -> bool:
         return elem in self
 
-    def __contains__(self, elem: Union[int, tuple[int]]) -> bool:
+    def __contains__(self, elem: Elem) -> bool:
         self._validate_elem(elem)
         i = self._hash(elem)
         return bool(self._bitmap.get_bit(i))
 
-    def __setitem__(self, elem: Union[int, tuple[int]], v: Union[bool,
-                                                                 int]) -> None:
+    def __setitem__(self, elem: Elem, v: Union[bool, int]) -> None:
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.update_bit(i, v)
 
-    def add(self, elem: Union[int, tuple[int]]) -> None:
+    def add(self, elem: Elem) -> None:
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.set_bit(i)
 
-    def discard(self, elem):
+    def discard(self, elem: Elem):
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
