@@ -91,7 +91,7 @@ class BitmapSet:
         # return self._elems.bit_count()  # new in version 3.10
         return bin(self._bitmap.value).count('1')
 
-    def __iter__(self) -> Iterator[tuple[int]]:
+    def __iter__(self) -> Iterator[Elem]:
         for i, bit in enumerate(reversed(bin(self._bitmap.value)[2:])):
             if bit == '1':
                 yield self._unhash(i)
