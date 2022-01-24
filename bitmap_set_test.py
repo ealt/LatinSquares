@@ -640,6 +640,42 @@ class BitmapSetTest(unittest.TestCase):
         expected_1d = BitmapSet(size=4, elems=[1])
         self.assertBitmapSetEqual(bitmap_set_1d, expected_1d)
 
+    def test_symmetric_difference(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a, _d])
+        self.assertBitmapSetEqual(bitmap_set.symmetric_difference(other),
+                                  expected)
+        self.assertBitmapSetEqual(bitmap_set ^ other, expected)
+        self.assertBitmapSetEqual(other ^ bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0, 3])
+        self.assertBitmapSetEqual(bitmap_set_1d.symmetric_difference(other_1d),
+                                  expected_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d ^ other_1d, expected_1d)
+        self.assertBitmapSetEqual(other_1d ^ bitmap_set_1d, expected_1d)
+
+    def test_symmetric_difference_update(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a, _d])
+        actual = bitmap_set.copy()
+        actual.symmetric_difference_update(other)
+        self.assertBitmapSetEqual(actual, expected)
+        actual = bitmap_set.copy()
+        actual ^= other
+        self.assertBitmapSetEqual(actual, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0, 3])
+        actual_1d = bitmap_set_1d.copy()
+        actual_1d.symmetric_difference_update(other_1d)
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+        actual_1d = bitmap_set_1d.copy()
+        actual_1d ^= other_1d
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+
 
 if __name__ == '__main__':
     unittest.main()

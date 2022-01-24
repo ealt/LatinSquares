@@ -317,3 +317,22 @@ class BitmapSet:
     def __isub__(self, other):
         self.difference_update(other)
         return self
+
+    def __xor__(self, other):
+        return self.symmetric_difference(other)
+
+    def __rxor__(self, other):
+        return self.symmetric_difference(other)
+
+    def symmetric_difference(self, other):
+        self._validate_other(other)
+        value = self._bitmap.value ^ other._bitmap.value
+        return self.__class__(size=self.size, shape=self.shape, elems=value)
+
+    def symmetric_difference_update(self, other):
+        self._validate_other(other)
+        self._bitmap.value ^= other._bitmap.value
+
+    def __ixor__(self, other):
+        self.symmetric_difference_update(other)
+        return self
