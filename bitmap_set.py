@@ -189,3 +189,11 @@ class BitmapSet:
 
     def clear(self) -> None:
         self._bitmap.value = 0
+
+    # ------- other methods ----------------------------------------------------
+
+    def _validate_other(self, other):
+        if not isinstance(other, self.__class__):
+            raise TypeError
+        elif other.shape != self.shape:
+            raise ValueError
