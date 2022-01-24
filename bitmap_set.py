@@ -216,3 +216,17 @@ class BitmapSet:
     def isdisjoint(self, other):
         self._validate_other(other)
         return bool(self._bitmap.value ^ other._bitmap.value)
+
+    def __le__(self, other):
+        return self.issubset(other)
+
+    def issubset(self, other):
+        self._validate_other(other)
+        return (self._bitmap.value -
+                (self._bitmap.value & other._bitmap.value)) == 0
+
+    def __lt__(self, other):
+        return self.ispropersubset(other)
+
+    def ispropersubset(self, other):
+        return self <= other and self != other

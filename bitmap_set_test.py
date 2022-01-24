@@ -325,6 +325,43 @@ class BitmapSetTest(unittest.TestCase):
         other_1d = BitmapSet(size=4, elems=[0, 3, 1])
         self.assertTrue(bitmap_set_1d.isdisjoint(other_1d))
 
+    def test_issubset(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        # proper subset
+        other = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        self.assertTrue(bitmap_set.issubset(other))
+        self.assertTrue(bitmap_set <= other)
+        self.assertTrue(bitmap_set.ispropersubset(other))
+        self.assertTrue(bitmap_set < other)
+        other_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        self.assertTrue(bitmap_set_1d.issubset(other_1d))
+        self.assertTrue(bitmap_set_1d <= other_1d)
+        self.assertTrue(bitmap_set_1d.ispropersubset(other_1d))
+        self.assertTrue(bitmap_set_1d < other_1d)
+        # equal sets
+        other = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertTrue(bitmap_set.issubset(other))
+        self.assertTrue(bitmap_set <= other)
+        self.assertFalse(bitmap_set.ispropersubset(other))
+        self.assertFalse(bitmap_set < other)
+        other_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertTrue(bitmap_set_1d.issubset(other_1d))
+        self.assertTrue(bitmap_set_1d <= other_1d)
+        self.assertFalse(bitmap_set_1d.ispropersubset(other_1d))
+        self.assertFalse(bitmap_set_1d < other_1d)
+        # proper superset
+        other = BitmapSet(shape=_shape, elems=[_a, _b])
+        self.assertFalse(bitmap_set.issubset(other))
+        self.assertFalse(bitmap_set <= other)
+        self.assertFalse(bitmap_set.ispropersubset(other))
+        self.assertFalse(bitmap_set < other)
+        other_1d = BitmapSet(size=4, elems=[0, 1])
+        self.assertFalse(bitmap_set_1d.issubset(other_1d))
+        self.assertFalse(bitmap_set_1d <= other_1d)
+        self.assertFalse(bitmap_set_1d.ispropersubset(other_1d))
+        self.assertFalse(bitmap_set_1d < other_1d)
+
 
 if __name__ == '__main__':
     unittest.main()
