@@ -155,6 +155,9 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.set_bit(i)
 
+    def __delitem__(self, elem):
+        self.remove(elem)
+
     def remove(self, elem):
         if elem not in self:
             raise KeyError
