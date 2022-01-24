@@ -94,8 +94,8 @@ class BitmapSetTest(unittest.TestCase):
         self.assertListEqual(list(bitmap_set), [_a, _b, _c])
 
     def test_elems_int_init(self):
-        # bin(524546) = '000000000100000100000010'
-        # indicies of ones:  ^19  ^14   ^8     ^1
+        # bin(16642) = '000000000100000100000010'
+        # indicies of ones: ^19  ^14   ^8     ^1
         bitmap_set = BitmapSet(shape=_shape, elems=16642)
         self.assertListEqual(list(bitmap_set), [_a, _b, _c])
 
