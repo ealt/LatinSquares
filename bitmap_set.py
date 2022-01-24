@@ -28,10 +28,7 @@ class BitmapSet:
     def _init_size_shape(self,
                          size: Optional[int] = None,
                          shape: Optional[tuple[int]] = None) -> None:
-        if not (size or shape):
-            raise ValueError
-        self._size = None
-        self._shape = None
+        self._size = 0
         if shape:
             self._validate_shape(shape)
             self._size = reduce(mul, shape)
@@ -39,7 +36,10 @@ class BitmapSet:
         if size:
             self._validate_size(size)
             self._size = size
-            self._shape = self._shape if self._shape else (self.size,)
+            if not shape:
+                self._shape = (self.size,)
+        if not self.size:
+            raise ValueError
 
     def _validate_shape(self, shape: tuple[int]) -> None:
         if isinstance(shape, tuple):
