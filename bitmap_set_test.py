@@ -399,6 +399,156 @@ class BitmapSetTest(unittest.TestCase):
         self.assertTrue(bitmap_set_1d.ispropersuperset(other_1d))
         self.assertTrue(bitmap_set_1d > other_1d)
 
+    def test_union(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        self.assertBitmapSetEqual(bitmap_set.union(other), expected)
+        self.assertBitmapSetEqual(bitmap_set | other, expected)
+        self.assertBitmapSetEqual(other | bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        self.assertBitmapSetEqual(bitmap_set_1d.union(other_1d), expected_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d | other_1d, expected_1d)
+        self.assertBitmapSetEqual(other_1d | bitmap_set_1d, expected_1d)
+
+    def test_union_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a])
+        others = [
+            BitmapSet(shape=_shape, elems=[_b]),
+            BitmapSet(shape=_shape, elems=[_c]),
+            BitmapSet(shape=_shape, elems=[_d]),
+        ]
+        expected = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        self.assertBitmapSetEqual(bitmap_set.union(*others), expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0])
+        others_1d = [
+            BitmapSet(size=4, elems=[1]),
+            BitmapSet(size=4, elems=[2]),
+            BitmapSet(size=4, elems=[3]),
+        ]
+        expected_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        self.assertBitmapSetEqual(bitmap_set_1d.union(*others_1d), expected_1d)
+
+    def test_update(self):
+        # original set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual.update(other)
+        self.assertTrue(actual == expected)
+        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual |= other
+        self.assertBitmapSetEqual(actual, expected)
+        # original set = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d.update(other_1d)
+        self.assertTrue(actual_1d == expected_1d)
+        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d |= other_1d
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+
+    def test_update_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[
+            _a,
+        ])
+        others = [
+            BitmapSet(shape=_shape, elems=[_b]),
+            BitmapSet(shape=_shape, elems=[_c]),
+            BitmapSet(shape=_shape, elems=[_d]),
+        ]
+        bitmap_set.update(*others)
+        expected = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        self.assertBitmapSetEqual(bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0])
+        others_1d = [
+            BitmapSet(size=4, elems=[1]),
+            BitmapSet(size=4, elems=[2]),
+            BitmapSet(size=4, elems=[3]),
+        ]
+        expected_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        bitmap_set_1d.update(*others_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d, expected_1d)
+
+    def test_difference(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a])
+        self.assertBitmapSetEqual(bitmap_set.difference(other), expected)
+        self.assertBitmapSetEqual(bitmap_set - other, expected)
+        expected = BitmapSet(shape=_shape, elems=[_d])
+        self.assertBitmapSetEqual(other - bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0])
+        self.assertBitmapSetEqual(bitmap_set_1d.difference(other_1d),
+                                  expected_1d)
+        self.assertBitmapSetEqual(bitmap_set_1d - other_1d, expected_1d)
+        expected_1d = BitmapSet(size=4, elems=[3])
+        self.assertBitmapSetEqual(other_1d - bitmap_set_1d, expected_1d)
+
+    def test_difference_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        others = [
+            BitmapSet(shape=_shape, elems=[_a]),
+            BitmapSet(shape=_shape, elems=[_c]),
+            BitmapSet(shape=_shape, elems=[_d]),
+        ]
+        expected = BitmapSet(shape=_shape, elems=[_b])
+        self.assertBitmapSetEqual(bitmap_set.difference(*others), expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        others_1d = [
+            BitmapSet(size=4, elems=[0]),
+            BitmapSet(size=4, elems=[2]),
+            BitmapSet(size=4, elems=[3]),
+        ]
+        expected_1d = BitmapSet(size=4, elems=[1])
+        self.assertBitmapSetEqual(bitmap_set_1d.difference(*others_1d),
+                                  expected_1d)
+
+    def test_difference_update(self):
+        # oroginal set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
+        expected = BitmapSet(shape=_shape, elems=[_a])
+        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual.difference_update(other)
+        self.assertBitmapSetEqual(actual, expected)
+        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual -= other
+        self.assertBitmapSetEqual(actual, expected)
+        # original set 1d = BitmapSet(size=4, elems=[0, 1, 2])
+        other_1d = BitmapSet(size=4, elems=[1, 2, 3])
+        expected_1d = BitmapSet(size=4, elems=[0])
+        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d.difference_update(other_1d)
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d -= other_1d
+        self.assertBitmapSetEqual(actual_1d, expected_1d)
+
+    def test_difference_update_multiple_others(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
+        others = [
+            BitmapSet(shape=_shape, elems=[_a]),
+            BitmapSet(shape=_shape, elems=[_c]),
+            BitmapSet(shape=_shape, elems=[_d]),
+        ]
+        bitmap_set.difference_update(*others)
+        expected = BitmapSet(shape=_shape, elems=[_b])
+        self.assertBitmapSetEqual(bitmap_set, expected)
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
+        others_1d = [
+            BitmapSet(size=4, elems=[0]),
+            BitmapSet(size=4, elems=[2]),
+            BitmapSet(size=4, elems=[3]),
+        ]
+        bitmap_set_1d.difference_update(*others_1d)
+        expected_1d = BitmapSet(size=4, elems=[1])
+        self.assertBitmapSetEqual(bitmap_set_1d, expected_1d)
+
 
 if __name__ == '__main__':
     unittest.main()

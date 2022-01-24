@@ -244,3 +244,49 @@ class BitmapSet:
 
     def ispropersuperset(self, other):
         return self >= other and self != other
+
+    def __or__(self, other):
+        return self.union(other)
+
+    def __ror__(self, other):
+        return self.union(other)
+
+    def union(self, *others):
+        value = self._bitmap.value
+        for other in others:
+            self._validate_other(other)
+            value |= other._bitmap.value
+        return self.__class__(size=self.size, shape=self.shape, elems=value)
+
+    def update(self, *others):
+        for other in others:
+            self._validate_other(other)
+            self._bitmap.value |= other._bitmap.value
+
+    def __ior__(self, other):
+        self.update(other)
+        return self
+
+    def __sub__(self, other):
+        return self.difference(other)
+
+    def difference(self, *others):
+        value = self._bitmap.value
+        for other in others:
+            self._validate_other(other)
+            value -= (value & other._bitmap.value)
+        return self.__class__(size=self.size, shape=self.shape, elems=value)
+
+    def __rsub__(self, other):
+        self._validate_other(other)
+        value = other._bitmap.value - (self._bitmap.value & other._bitmap.value)
+        return self.__class__(size=self.size, shape=self.shape, elems=value)
+
+    def difference_update(self, *others):
+        for other in others:
+            self._validate_other(other)
+            self._bitmap.value -= (self._bitmap.value & other._bitmap.value)
+
+    def __isub__(self, other):
+        self.difference_update(other)
+        return self
