@@ -1,6 +1,6 @@
 from functools import reduce
 from operator import mul
-from typing import Iterable, Optional, Union
+from typing import Iterable, Iterator, Optional, Union
 
 from bitmap import Bitmap
 
@@ -91,7 +91,7 @@ class BitmapSet:
         # return self._elems.bit_count()  # new in version 3.10
         return bin(self._bitmap.value).count('1')
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[int]]:
         for i, bit in enumerate(reversed(bin(self._bitmap.value)[2:])):
             if bit == '1':
                 yield self._unhash(i)
@@ -155,16 +155,16 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.set_bit(i)
 
-    def __delitem__(self, elem):
+    def __delitem__(self, elem: Elem) -> None:
         self.remove(elem)
 
-    def remove(self, elem):
+    def remove(self, elem: Elem) -> None:
         if elem not in self:
             raise KeyError
         else:
             self.discard(elem)
 
-    def discard(self, elem: Elem):
+    def discard(self, elem: Elem) -> None:
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
