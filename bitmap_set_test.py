@@ -109,6 +109,14 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         self.assertListEqual(list(reversed(bitmap_set)), [_c, _b, _a])
 
+    def test_repr(self):
+        bitmap_set = BitmapSet(shape=_shape,
+                               elems=[(0, 0, 1), (0, 2, 0), (1, 1, 3)])
+        self.assertMultiLineEqual(repr(bitmap_set),
+                                  '{(0, 0, 1), (0, 2, 0), (1, 1, 3)}')
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        self.assertMultiLineEqual(repr(bitmap_set_1d), '{0, 1, 2}')
+
     # ------- single elem methods ----------------------------------------------
 
     def test_invalid_elem(self):

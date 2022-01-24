@@ -102,6 +102,9 @@ class BitmapSet:
             if bit == '1':
                 yield self._unhash(i)
 
+    def __repr__(self) -> str:
+        return '{' + ', '.join([str(elem) for elem in iter(self)]) + '}'
+
     # ------- single elem methods ----------------------------------------------
 
     def _validate_elem(self, elem: Elem) -> None:
