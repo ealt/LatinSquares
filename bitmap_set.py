@@ -168,3 +168,9 @@ class BitmapSet:
         self._validate_elem(elem)
         i = self._hash(elem)
         self._bitmap.clear_bit(i)
+
+    def pop(self) -> tuple[int]:
+        elem = next(iter(self))
+        i = self._hash(elem)
+        self._bitmap.clear_bit(i)
+        return elem

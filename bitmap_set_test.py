@@ -219,6 +219,16 @@ class BitmapSetTest(unittest.TestCase):
         self.assertListEqual(list(bitmap_set), [_a, _b])
         self.assertListEqual(list(bitmap_set_1d), [0, 1])
 
+    def test_pop(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        elem = bitmap_set.pop()
+        elem_1d = bitmap_set_1d.pop()
+        self.assertTupleEqual(elem, _a)
+        self.assertEqual(elem_1d, 0)
+        self.assertListEqual(list(bitmap_set), [_b, _c])
+        self.assertListEqual(list(bitmap_set_1d), [1, 2])
+
 
 if __name__ == '__main__':
     unittest.main()
