@@ -7,6 +7,8 @@ from bitmap import Bitmap
 
 class BitmapSet:
 
+    # ------- init methods -----------------------------------------------------
+
     def __init__(self,
                  size: Optional[int] = None,
                  shape: Optional[tuple[int]] = None,
@@ -72,6 +74,8 @@ class BitmapSet:
         else:
             raise TypeError
 
+    # ------- container methods ------------------------------------------------
+
     @property
     def size(self) -> int:
         return self._size
@@ -88,6 +92,8 @@ class BitmapSet:
         for i, bit in enumerate(reversed(bin(self._bitmap.value)[2:])):
             if bit == '1':
                 yield self._unhash(i)
+
+    # ------- single elem methods ----------------------------------------------
 
     def _validate_elem(self, elem: Union[int, tuple[int]]) -> None:
         if isinstance(elem, tuple):
