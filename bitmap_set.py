@@ -1,3 +1,4 @@
+from collections import abc
 from functools import reduce
 from operator import mul
 from typing import Any, Iterable, Iterator, Optional, Union
@@ -8,7 +9,7 @@ Elem = Union[int, tuple[int]]
 Elems = Union[int, Iterable[Elem]]
 
 
-class BitmapSet:
+class BitmapSet(abc.MutableSet):
 
     # ------- init methods -----------------------------------------------------
 
@@ -157,9 +158,9 @@ class BitmapSet:
     def __getitem__(self, elem: Elem) -> bool:
         return elem in self
 
-    def __contains__(self, elem: Elem) -> bool:
-        self._validate_elem(elem)
-        i = self._hash(elem)
+    def __contains__(self, value: Elem) -> bool:
+        self._validate_elem(value)
+        i = self._hash(value)
         return bool(self._bitmap.get_bit(i))
 
     def __setitem__(self, elem: Elem, v: Union[bool, int]) -> None:
@@ -167,23 +168,23 @@ class BitmapSet:
         i = self._hash(elem)
         self._bitmap.update_bit(i, v)
 
-    def add(self, elem: Elem) -> None:
-        self._validate_elem(elem)
-        i = self._hash(elem)
+    def add(self, value: Elem) -> None:
+        self._validate_elem(value)
+        i = self._hash(value)
         self._bitmap.set_bit(i)
 
     def __delitem__(self, elem: Elem) -> None:
         self.remove(elem)
 
-    def remove(self, elem: Elem) -> None:
-        if elem not in self:
+    def remove(self, value: Elem) -> None:
+        if value not in self:
             raise KeyError
         else:
-            self.discard(elem)
+            self.discard(value)
 
-    def discard(self, elem: Elem) -> None:
-        self._validate_elem(elem)
-        i = self._hash(elem)
+    def discard(self, value: Elem) -> None:
+        self._validate_elem(value)
+        i = self._hash(value)
         self._bitmap.clear_bit(i)
 
     def pop(self) -> Elem:
