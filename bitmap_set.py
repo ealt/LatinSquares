@@ -230,3 +230,17 @@ class BitmapSet:
 
     def ispropersubset(self, other):
         return self <= other and self != other
+
+    def __ge__(self, other):
+        return self.issuperset(other)
+
+    def issuperset(self, other):
+        self._validate_other(other)
+        return (other._bitmap.value -
+                (self._bitmap.value & other._bitmap.value)) == 0
+
+    def __gt__(self, other):
+        return self.ispropersuperset(other)
+
+    def ispropersuperset(self, other):
+        return self >= other and self != other
