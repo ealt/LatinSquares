@@ -145,9 +145,13 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
         # does contain
+        self.assertTrue(bitmap_set[_b])
+        self.assertTrue(bitmap_set_1d[(1,)])
         self.assertTrue(_b in bitmap_set)
         self.assertTrue(1 in bitmap_set_1d)
         # does not contain
+        self.assertFalse(bitmap_set[_d])
+        self.assertFalse(bitmap_set_1d[3])
         self.assertFalse(_d in bitmap_set)
         self.assertFalse((3,) in bitmap_set_1d)
 

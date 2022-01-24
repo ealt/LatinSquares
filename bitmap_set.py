@@ -134,6 +134,9 @@ class BitmapSet:
                 i //= n
             return tuple(reversed(elem))
 
+    def __getitem__(self, elem: Union[int, tuple[int]]) -> bool:
+        return elem in self
+
     def __contains__(self, elem: Union[int, tuple[int]]) -> bool:
         self._validate_elem(elem)
         i = self._hash(elem)
