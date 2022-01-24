@@ -449,22 +449,22 @@ class BitmapSetTest(unittest.TestCase):
         self.assertBitmapSetEqual(bitmap_set_1d.union(*others_1d), expected_1d)
 
     def test_update(self):
-        # original set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
         expected = BitmapSet(shape=_shape, elems=[_a, _b, _c, _d])
-        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual = bitmap_set.copy()
         actual.update(other)
         self.assertTrue(actual == expected)
-        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual = bitmap_set.copy()
         actual |= other
         self.assertBitmapSetEqual(actual, expected)
-        # original set = BitmapSet(size=4, elems=[0, 1, 2])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
         other_1d = BitmapSet(size=4, elems=[1, 2, 3])
         expected_1d = BitmapSet(size=4, elems=[0, 1, 2, 3])
-        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d = bitmap_set_1d.copy()
         actual_1d.update(other_1d)
         self.assertTrue(actual_1d == expected_1d)
-        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d = bitmap_set_1d.copy()
         actual_1d |= other_1d
         self.assertBitmapSetEqual(actual_1d, expected_1d)
 
@@ -527,22 +527,22 @@ class BitmapSetTest(unittest.TestCase):
                                   expected_1d)
 
     def test_difference_update(self):
-        # oroginal set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         other = BitmapSet(shape=_shape, elems=[_b, _c, _d])
         expected = BitmapSet(shape=_shape, elems=[_a])
-        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual = bitmap_set.copy()
         actual.difference_update(other)
         self.assertBitmapSetEqual(actual, expected)
-        actual = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        actual = bitmap_set.copy()
         actual -= other
         self.assertBitmapSetEqual(actual, expected)
-        # original set 1d = BitmapSet(size=4, elems=[0, 1, 2])
+        bitmap_set_1d = BitmapSet(size=4, elems=[0, 1, 2])
         other_1d = BitmapSet(size=4, elems=[1, 2, 3])
         expected_1d = BitmapSet(size=4, elems=[0])
-        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d = bitmap_set_1d.copy()
         actual_1d.difference_update(other_1d)
         self.assertBitmapSetEqual(actual_1d, expected_1d)
-        actual_1d = BitmapSet(size=4, elems=[0, 1, 2])
+        actual_1d = bitmap_set_1d.copy()
         actual_1d -= other_1d
         self.assertBitmapSetEqual(actual_1d, expected_1d)
 
