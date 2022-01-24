@@ -96,6 +96,12 @@ class BitmapSet:
             if bit == '1':
                 yield self._unhash(i)
 
+    def __reversed__(self) -> Iterator[Elem]:
+        bin_value = bin(self._bitmap.value)[2:]
+        for i, bit in zip(reversed(range(len(bin_value))), bin_value):
+            if bit == '1':
+                yield self._unhash(i)
+
     # ------- single elem methods ----------------------------------------------
 
     def _validate_elem(self, elem: Elem) -> None:

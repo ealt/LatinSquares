@@ -105,6 +105,10 @@ class BitmapSetTest(unittest.TestCase):
         bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
         self.assertEqual(len(bitmap_set), 3)
 
+    def test_reversed(self):
+        bitmap_set = BitmapSet(shape=_shape, elems=[_a, _b, _c])
+        self.assertListEqual(list(reversed(bitmap_set)), [_c, _b, _a])
+
     # ------- single elem methods ----------------------------------------------
 
     def test_invalid_elem(self):
