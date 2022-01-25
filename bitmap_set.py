@@ -1,73 +1,36 @@
+from abc import abstractclassmethod, abstractmethod
 from collections import abc
-from functools import reduce
-from operator import mul
-from typing import Any, Iterable, Iterator, Optional, Union
+from typing import Any, Iterable, Iterator, Optional, TypeVar, Union
 
 from bitmap import Bitmap
 
-Elem = Union[int, tuple[int]]
-Elems = Union[int, Iterable[Elem]]
+Bounds = TypeVar('Bounds', int, tuple[int])
+Elem = TypeVar('Elem', int, tuple[int])
+Elems = TypeVar('Elems', int, Iterable[int], Iterable[tuple[int]])
 
 
 class BitmapSet(abc.MutableSet):
 
     # ------- init methods -----------------------------------------------------
 
-    def __init__(self,
-                 size: Optional[int] = None,
-                 shape: Optional[tuple[int]] = None,
-                 elems: Optional[Elems] = None,
-                 **kwargs) -> None:
-        self._init_size_shape(size, shape)
+    def __init__(self, bounds: Bounds, elems: Optional[Elems] = None) -> None:
+        self._validate_bounds(bounds)
+        self._bounds = bounds
+        self._size = self._get_size(bounds)
         self._init_bitmap(elems)
+
+    @abstractclassmethod
+    def _validate_bounds(cls, bounds: Bounds) -> None:
+        pass
+
+    @abstractmethod
+    def _get_size(self, bounds: Bounds) -> int:
+        pass
 
     def _init_bitmap(self, elems: Optional[Elems]) -> None:
         self._bitmap = Bitmap(size=self.size)
         if elems:
             self._init_elems(elems)
-
-    def _init_size_shape(self,
-                         size: Optional[int] = None,
-                         shape: Optional[tuple[int]] = None) -> None:
-        self._size = 0
-        if shape:
-            self._validate_shape(shape)
-            self._size = reduce(mul, shape)
-            self._shape = shape
-        if size:
-            self._validate_size(size)
-            self._size = size
-            if not shape:
-                self._shape = (self.size,)
-        if not self.size:
-            raise ValueError
-
-    def _validate_shape(self, shape: tuple[int]) -> None:
-        if isinstance(shape, tuple):
-            if all(isinstance(n, int) for n in shape):
-                if all(n > 0 for n in shape):
-                    pass
-                else:
-                    raise ValueError
-            else:
-                raise TypeError
-        else:
-            raise TypeError
-
-    def _validate_size(self, size: int) -> None:
-        if isinstance(size, int):
-            if size > 0:
-                if self.size:
-                    if size == self.size:
-                        pass
-                    else:
-                        raise ValueError
-                else:
-                    pass
-            else:
-                raise ValueError
-        else:
-            raise TypeError
 
     def _init_elems(self, elems: Elems) -> None:
         if isinstance(elems, int):
@@ -79,19 +42,13 @@ class BitmapSet(abc.MutableSet):
             raise TypeError
 
     def copy(self):
-        return self.__class__(size=self.size,
-                              shape=self.shape,
-                              elems=self._bitmap.value)
+        return self.__class__(self._bounds, elems=self._bitmap.value)
 
     # ------- container methods ------------------------------------------------
 
     @property
     def size(self) -> int:
         return self._size
-
-    @property
-    def shape(self) -> tuple[int]:
-        return self._shape
 
     def __len__(self) -> int:
         # return self._elems.bit_count()  # new in version 3.10
@@ -111,49 +68,22 @@ class BitmapSet(abc.MutableSet):
     def __repr__(self) -> str:
         return '{' + ', '.join([str(elem) for elem in iter(self)]) + '}'
 
-    def __reduce__(self) -> tuple[type, tuple[int, tuple[int], int]]:
-        return (self.__class__, (self.size, self.shape, self._bitmap.value))
+    def __reduce__(self) -> tuple[type, tuple[Bounds, int]]:
+        return (self.__class__, (self._bounds, self._bitmap.value))
 
     # ------- single elem methods ----------------------------------------------
 
+    @abstractmethod
     def _validate_elem(self, elem: Elem) -> None:
-        if isinstance(elem, tuple):
-            if len(elem) == len(self.shape) and all(
-                    isinstance(v, int) for v in elem):
-                if all(0 <= v < n for v, n in zip(elem, self.shape)):
-                    pass
-                else:
-                    raise ValueError
-            else:
-                raise TypeError
-        elif isinstance(elem, int) and len(self.shape) == 1:
-            if 0 <= elem < self.size:
-                pass
-            else:
-                raise ValueError
-        else:
-            raise TypeError
+        pass
 
+    @abstractmethod
     def _hash(self, elem: Elem) -> int:
-        if isinstance(elem, int):
-            return elem
-        else:
-            i = 0
-            factor = 1
-            for v, n in zip(reversed(elem), reversed(self.shape)):
-                i += v * factor
-                factor *= n
-            return i
+        pass
 
+    @abstractmethod
     def _unhash(self, i: int) -> Elem:
-        if len(self.shape) == 1:
-            return i
-        else:
-            elem = [0] * len(self.shape)
-            for v_i, n in enumerate(reversed(self.shape)):
-                elem[v_i] = i % n
-                i //= n
-            return tuple(reversed(elem))
+        pass
 
     def __getitem__(self, elem: Elem) -> bool:
         return elem in self
@@ -201,7 +131,7 @@ class BitmapSet(abc.MutableSet):
     def _validate_other(self, other: Any) -> None:
         if not isinstance(other, self.__class__):
             raise TypeError
-        elif other.shape != self.shape:
+        elif other.size != self.size:
             raise ValueError
 
     def __ne__(self, other):
@@ -262,7 +192,7 @@ class BitmapSet(abc.MutableSet):
         for other in others:
             self._validate_other(other)
             value |= other._bitmap.value
-        return self.__class__(size=self.size, shape=self.shape, elems=value)
+        return self.__class__(self._bounds, elems=value)
 
     def update(self, *others):
         for other in others:
@@ -284,7 +214,7 @@ class BitmapSet(abc.MutableSet):
         for other in others:
             self._validate_other(other)
             value &= other._bitmap.value
-        return self.__class__(size=self.size, shape=self.shape, elems=value)
+        return self.__class__(self._bounds, elems=value)
 
     def intersection_update(self, *others):
         for other in others:
@@ -303,12 +233,12 @@ class BitmapSet(abc.MutableSet):
         for other in others:
             self._validate_other(other)
             value -= (value & other._bitmap.value)
-        return self.__class__(size=self.size, shape=self.shape, elems=value)
+        return self.__class__(self._bounds, elems=value)
 
     def __rsub__(self, other):
         self._validate_other(other)
         value = other._bitmap.value - (self._bitmap.value & other._bitmap.value)
-        return self.__class__(size=self.size, shape=self.shape, elems=value)
+        return self.__class__(self._bounds, elems=value)
 
     def difference_update(self, *others):
         for other in others:
@@ -328,7 +258,7 @@ class BitmapSet(abc.MutableSet):
     def symmetric_difference(self, other):
         self._validate_other(other)
         value = self._bitmap.value ^ other._bitmap.value
-        return self.__class__(size=self.size, shape=self.shape, elems=value)
+        return self.__class__(self._bounds, elems=value)
 
     def symmetric_difference_update(self, other):
         self._validate_other(other)
